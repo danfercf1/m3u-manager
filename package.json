@@ -1,0 +1,33 @@
+{
+  "name": "m3u-manager",
+  "version": "1.0.0",
+  "description": "m3u iptv list manager",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danfercf1/m3u-manager.git"
+  },
+  "keywords": [
+    "m3u",
+    "list",
+    "iptv"
+  ],
+  "author": "Daniel Candia",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/danfercf1/m3u-manager/issues"
+  },
+  "homepage": "https://github.com/danfercf1/m3u-manager#readme",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "download": "^8.0.0",
+    "fs": "0.0.1-security",
+    "iptv-playlist-parser": "^0.11.0",
+    "lodash": "^4.17.21",
+    "m3u-parser-generator": "^1.0.4"
+  }
+}

@@ -119,6 +119,10 @@ dist
 .yarn/unplugged
 .yarn/build-state.yml
 
+# List folders
+
+lists/
+
 # .yarn/cache and .pnp.* may be safely ignored, but you'll need to run yarn install
 # to regenerate them between each branch switch.
 # Uncomment the following lines if you're not using Zero-Installs:
@@ -126,3 +130,4 @@ dist
 # .pnp.*
 
 # End of https://www.toptal.com/developers/gitignore/api/node,yarn
+
