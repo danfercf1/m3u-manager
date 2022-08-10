@@ -1,8 +1,12 @@
+import { config } from 'dotenv';
+
+config();
+
 const api = {
   url: "http://51.161.115.48:8080/player_api.php",
   credentials: {
-    userName: "danfercf",
-    password: "d4nf3rcf",
+    userName: process.env.USERNAME,
+    password: process.env.PASSWORD,
   },
   actions: {
     getAllLiveStreams: "get_live_streams",
