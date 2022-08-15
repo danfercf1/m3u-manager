@@ -30,21 +30,26 @@ const filterList = async (
   }
 };
 
-const createList = async (channelData, selectedChannels) => {
+const createList = async (channelData) => {
   const playlist = new M3uPlaylist();
   playlist.title = `danfercf's IPTV`;
 
   channelData.forEach((channel) => {
     const media = new M3uMedia(channel.url);
     const channelName = channel.name;
+    
     media.attributes = {
-      "tvg-id": channel.tvg.id,
-      "tvg-language": "ES",
-      "tvg-logo": channel.tvg.logo,
+      "tvg-id": channel.tvg.id || "",
+      "tvg-name": channel.tvg.name || "",
+      "tvg-language": channel.tvg.language || "ES",
+      "tvg-country": channel.tvg.country || "",
+      "tvg-logo": channel.tvg.logo || "",
+      "tvg-url": channel.tvg.url || "",
+      "tvg-rec": channel.tvg.rec || "",
     };
     media.duration = -1;
     media.name = channelName;
-    media.group = selectGroupByChannel(channelName, selectedChannels);
+    media.group = (channel.group) ? channel.group.title : "";
 
     playlist.medias.push(media);
   });
@@ -54,9 +59,9 @@ const createList = async (channelData, selectedChannels) => {
 
 const selectGroupByChannel = (channelName, selectedChannels) => {
   const channelGroup = selectedChannels.find((c) =>
-    c.items.includes(channelName)
+    c.channel === channelName
   );
-  return channelGroup.name;
+  return channelGroup.category;
 };
 
 const mergeList = async (m3uList, xtreamCodeList) => {
@@ -68,6 +73,9 @@ const mapM3uXtreamCodeData = async (joined) => {
     const name = channel.name;
     return {
       name: name,
+      group: {
+        title: (channel.group) ? channel.group.title : ""
+      },
       url: channel.url,
       tvg: {
         id: channel.epg_channel_id,
@@ -108,4 +116,5 @@ export {
   mapM3uXtreamCodeData,
   mergeList,
   fixChannelNameforApi,
+  selectGroupByChannel,
 };

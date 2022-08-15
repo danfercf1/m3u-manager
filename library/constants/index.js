@@ -1,9 +1,18 @@
-const api = {
-  url: "http://51.161.115.48:8080/player_api.php",
-  credentials: {
-    userName: "danfercf",
-    password: "d4nf3rcf",
-  },
+import { config } from "dotenv";
+import path from "path";
+
+config();
+
+const homeDir = path.resolve(path.dirname(""));
+const listsDir = path.resolve(homeDir, "lists");
+const generatedList = path.resolve(homeDir, "./lists/generated/iptv.m3u");
+
+const statuses = {
+  enabled: "enabled",
+  disabled: "disabled",
+};
+
+const xtreamApi = {
   actions: {
     getAllLiveStreams: "get_live_streams",
     getLiveCategories: "get_live_categories",
@@ -12,13 +21,6 @@ const api = {
     getSeriesStreams: "get_series",
     getSeriesCategories: "get_series_categories",
   },
-  categories: {
-    events: 33,
-  }
 };
 
-const m3u = {
-  url: 'http://10.10.10.20/iptv/iptv.m3u'
-}
-
-export { api, m3u };
+export { xtreamApi, homeDir, listsDir, statuses, generatedList };

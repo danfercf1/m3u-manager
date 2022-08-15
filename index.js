@@ -1,41 +1,30 @@
-import { writeFile } from './library/file.js';
-import { createList, mapM3uXtreamCodeData, mergeList } from './library/list.js';
-import { getSelectedChannels } from './library/channels/selected/index.js';
-import { liveChannels } from './library/channels/live.js';
-import { listfromM3u } from './library/channels/m3u.js'
-
-const listName = "iptv.m3u";
-const m3uFile = `./lists/${listName}`;
-const newFile = `./lists/generated/${listName}`;
+import {
+  listManager,
+  getLists,
+  mergeArrays,
+  generateList,
+  writeList,
+} from "./library/manager.js";
 
 (async () => {
   try {
-    // From m3u file
-    
-    const filteredListFromM3u = await listfromM3u(m3uFile);
+    let newList = [];
+    const lists = await getLists();
 
-    // From Xtream Code API
-    
-    const filteredListFromApi = await liveChannels();
+    lists.forEach((list) => {
+      newList.push(listManager(list));
+    });
 
-    // Merge channels
-
-    const mergedChannels = await mergeList(filteredListFromM3u, filteredListFromApi);
-
-    // Map Channels
-
-    const mappedChannels = await mapM3uXtreamCodeData(mergedChannels);
-
-    // Create new List
-
-    const newList = await createList(mappedChannels, await getSelectedChannels());
-
-    // Write the new m3u file
-
-    await writeFile(newFile, newList);
-
-    console.log(mappedChannels);
-
+    if (newList.length > 0) {
+      const processedlists = mergeArrays(
+        (await Promise.all(newList)).filter((item) => item)
+      );
+      // Create new List
+      const generatedList = await generateList(processedlists);
+      // Write the new m3u file
+      await writeList(generatedList);
+      console.log(generatedList);
+    }
   } catch (error) {
     console.log(error);
   }

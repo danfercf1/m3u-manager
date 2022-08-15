@@ -121,7 +121,17 @@ dist
 
 # List folders
 
-lists/
+lists/*.m3u
+
+lists/generated/*m3u
+
+# Configuration files
+
+configuration/*.json
+
+# EPG folder
+
+epg/
 
 # .yarn/cache and .pnp.* may be safely ignored, but you'll need to run yarn install
 # to regenerate them between each branch switch.
