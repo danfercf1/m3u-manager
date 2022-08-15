@@ -2,6 +2,8 @@ import { M3uPlaylist, M3uMedia } from "m3u-parser-generator";
 import _ from "lodash";
 import parser from "iptv-playlist-parser";
 
+import { m3uListTitle } from "./constants/index.js";
+
 const getPlayList = async (list) => {
   try {
     return parser.parse(list);
@@ -32,12 +34,12 @@ const filterList = async (
 
 const createList = async (channelData) => {
   const playlist = new M3uPlaylist();
-  playlist.title = `danfercf's IPTV`;
+  playlist.title = m3uListTitle;
 
   channelData.forEach((channel) => {
     const media = new M3uMedia(channel.url);
     const channelName = channel.name;
-    
+
     media.attributes = {
       "tvg-id": channel.tvg.id || "",
       "tvg-name": channel.tvg.name || "",
@@ -49,7 +51,7 @@ const createList = async (channelData) => {
     };
     media.duration = -1;
     media.name = channelName;
-    media.group = (channel.group) ? channel.group.title : "";
+    media.group = channel.group ? channel.group.title : "";
 
     playlist.medias.push(media);
   });
@@ -58,9 +60,7 @@ const createList = async (channelData) => {
 };
 
 const selectGroupByChannel = (channelName, selectedChannels) => {
-  const channelGroup = selectedChannels.find((c) =>
-    c.channel === channelName
-  );
+  const channelGroup = selectedChannels.find((c) => c.channel === channelName);
   return channelGroup.category;
 };
 
@@ -74,7 +74,7 @@ const mapM3uXtreamCodeData = async (joined) => {
     return {
       name: name,
       group: {
-        title: (channel.group) ? channel.group.title : ""
+        title: channel.group ? channel.group.title : "",
       },
       url: channel.url,
       tvg: {
