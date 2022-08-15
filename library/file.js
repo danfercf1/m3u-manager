@@ -11,18 +11,28 @@ const checkFileExists = async (file) => {
 
 const readFile = async (file) => {
   try {
-    return fs.readFileSync(file, { encoding: 'utf-8' });
+    return fs.readFileSync(file, { encoding: "utf-8" });
   } catch (error) {
     throw error;
   }
 };
 
 const writeFile = async (file, data) => {
-    try {
-        return fs.writeFileSync(file, data);
-      } catch (error) {
-        throw error;
-      } 
-}
+  try {
+    return fs.writeFileSync(file, data);
+  } catch (error) {
+    throw error;
+  }
+};
 
-export { checkFileExists, readFile, writeFile };
+const getFileName = async (url) => {
+  const urlSplitted = url.split("/");
+  return urlSplitted.slice(-1);
+};
+
+const checkFileName = async (fileName) => {
+  const result = fileName[0].match(/.m3u$/s);
+  return (result !== null) ? true : false;
+};
+
+export { checkFileExists, readFile, writeFile, getFileName, checkFileName };
