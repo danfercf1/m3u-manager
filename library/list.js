@@ -2,7 +2,7 @@ import { M3uPlaylist, M3uMedia } from "m3u-parser-generator";
 import _ from "lodash";
 import parser from "iptv-playlist-parser";
 
-import { m3uListTitle } from "./constants/index.js";
+import { m3uListTitle, optimizedForKodi } from "./constants/index.js";
 
 const getPlayList = async (list) => {
   try {
@@ -56,7 +56,13 @@ const createList = async (channelData) => {
     playlist.medias.push(media);
   });
 
-  return playlist.getM3uString();
+  const m3uListGenerated = playlist.getM3uString();
+
+  if (optimizedForKodi) {
+    return addKodiOptimization(m3uListGenerated);
+  } else {
+    return m3uListGenerated;
+  }
 };
 
 const selectGroupByChannel = (channelName, selectedChannels) => {
@@ -107,6 +113,19 @@ const fixChannelNameforApi = async (filteredList) => {
       tv_archive_duration: value.tv_archive_duration,
     };
   });
+};
+
+const addKodiOptimization = async (m3uList) => {
+  let newM3u = "#EXTM3U\n";
+  const m3uListSplitted = m3uList.split(/\r?\n/);
+  newM3u = `${newM3u}${m3uListSplitted[1]}\n`;
+  for (let index = 2; index < m3uListSplitted.length; index++) {
+    const value = m3uListSplitted[index];
+    newM3u = `${newM3u}${value}\n`;
+    if (value.search("#EXTGRP") !== -1)
+      newM3u = `${newM3u}#KODIPROP:inputstream=inputstream.adaptive\n#KODIPROP:inputstream.adaptive.manifest_type=hls\n`;
+  }
+  return newM3u;
 };
 
 export {

@@ -9,6 +9,7 @@ const m3uListName = process.env.M3U_LIST_NAME || "iptv-custom.m3u";
 
 const generatedList = path.resolve(homeDir, `./lists/generated/${m3uListName}`);
 const m3uListTitle = process.env.M3U_LIST_TITLE || "Danfercf IPTV";
+const optimizedForKodi = process.env.OPTIMIZED_FOR_KODI || true;
 
 const statuses = {
   enabled: "enabled",
@@ -26,4 +27,12 @@ const xtreamApi = {
   },
 };
 
-export { xtreamApi, homeDir, listsDir, statuses, generatedList, m3uListTitle };
+export {
+  xtreamApi,
+  homeDir,
+  listsDir,
+  statuses,
+  generatedList,
+  m3uListTitle,
+  optimizedForKodi,
+};
