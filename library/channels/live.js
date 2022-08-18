@@ -10,11 +10,17 @@ const liveChannels = async (list) => {
 
     const fixedListFromApi = await fixChannelNameforApi(listFromApi);
 
-    return await filterList(
-      fixedListFromApi,
-      await getSelectedChannelsByName(list),
-      "xtream-code"
-    );
+    const selected = await getSelectedChannelsByName(list);
+
+    if (selected.length > 0) {
+      return await filterList(
+        fixedListFromApi,
+        await getSelectedChannelsByName(list),
+        "xtream-code"
+      );
+    } else {
+      return fixedListFromApi;
+    }
   } catch (error) {
     console.log(error);
   }
