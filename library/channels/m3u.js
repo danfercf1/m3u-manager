@@ -13,6 +13,7 @@ const listfromM3u = async (list) => {
   } = list;
   const m3uName = `${name}.m3u`;
   const m3uFile = `${listsDir}/${m3uName}`;
+  let filteredList = [];
 
   if (downloadm3u) {
     await download(url, listsDir, { filename: m3uName });
@@ -22,14 +23,26 @@ const listfromM3u = async (list) => {
 
   const parsedList = await getPlayList(playlist);
 
-  const filteredList = await filterList(
-    parsedList,
-    await getSelectedChannelsByName(list)
-  );
+  const selected = await getSelectedChannelsByName(list);
+
+  if (selected.length > 0) {
+    filteredList = await filterList(
+      parsedList,
+      await getSelectedChannelsByName(list)
+    );
+  } else {
+    filteredList = parsedList.items;
+  }
 
   return filteredList.map((list) => {
     let newList = list;
-    const group = selectGroupByChannel(list.name, selection);
+    let group = "";
+    if (!selection) {
+      group = name.toUpperCase();
+    } else {
+      group = selectGroupByChannel(list.name, selection);
+    }
+    
     newList.group.title = group;
     return newList;
   });
