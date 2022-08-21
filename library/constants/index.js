@@ -5,9 +5,12 @@ config();
 
 const homeDir = path.resolve(path.dirname(""));
 const listsDir = path.resolve(homeDir, "lists");
+const epgDir = path.resolve(homeDir, "epg");
 const m3uListName = process.env.M3U_LIST_NAME || "iptv-custom.m3u";
+const xmlName = process.env.XML_LIST_NAME || "iptv-custom.xml";
 
 const generatedList = path.resolve(homeDir, `./lists/generated/${m3uListName}`);
+const generatedXml = path.resolve(homeDir, `./lists/generated/${xmlName}`);
 const m3uListTitle = process.env.M3U_LIST_TITLE || "Danfercf IPTV";
 const optimizedForKodi = process.env.OPTIMIZED_FOR_KODI || true;
 
@@ -35,4 +38,6 @@ export {
   generatedList,
   m3uListTitle,
   optimizedForKodi,
+  epgDir,
+  generatedXml,
 };
