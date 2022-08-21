@@ -4,6 +4,7 @@ import {
   mergeArrays,
   generateList,
   writeList,
+  generateXmlList,
 } from "./library/manager.js";
 
 (async () => {
@@ -16,13 +17,26 @@ import {
     });
 
     if (newList.length > 0) {
-      const processedlists = mergeArrays(
-        (await Promise.all(newList)).filter((item) => item)
-      );
+      let [...dataResult] = (await Promise.all(newList)).filter((item) => item);
+      const channels = dataResult.map((element) => {
+        return element.channels;
+      });
+
+      const programs = dataResult
+        .map((element) => {
+          return element.epg;
+        })
+        .filter(Boolean);
+
+      const processedlists = mergeArrays(channels);
+
+      const processedXmlLists = mergeArrays(programs);
       // Create new List
       const generatedList = await generateList(processedlists);
+      const generatedXmlList = await generateXmlList(processedXmlLists, processedlists);
       // Write the new m3u file
       await writeList(generatedList);
+      await writeList(generatedXmlList, "xml");
       console.log(generatedList);
     }
   } catch (error) {

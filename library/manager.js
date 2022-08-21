@@ -3,18 +3,24 @@ import _ from "lodash";
 import {
   statuses,
   generatedList as generatedListName,
+  generatedXml,
 } from "./constants/index.js";
 import { getAllLists } from "./extractData.js";
 import { listfromM3u } from "./channels/m3u.js";
 import { createList, mergeList, mapM3uXtreamCodeData } from "./list.js";
 import { writeFile } from "./file.js";
 import { liveChannels } from "./channels/live.js";
-import { getAllChannelsByCategories, getChannelsByCategory } from "./channels/selected/category.js";
+import {
+  getAllChannelsByCategories,
+  getChannelsByCategory,
+} from "./channels/selected/category.js";
+import { getEpg, generateXml } from "./xml.js";
 
 const listManager = async (list) => {
   const { status, mergeApiM3u, mapM3uXtreamCode } = list;
   let filteredList = [];
   let resultChannelsByCategory = [];
+  let resultData = {};
 
   if (status === statuses.enabled) {
     if (list.m3u && !list.api) {
@@ -32,14 +38,16 @@ const listManager = async (list) => {
 
     if (list.api && !list.m3u) {
       // From Xtream Code API
-      if (resultChannelsByCategory.length > 0) list.selection = list.selction.concat(resultChannelsByCategory);
+      if (resultChannelsByCategory.length > 0)
+        list.selection = list.selction.concat(resultChannelsByCategory);
       const filteredListFromApi = await liveChannels(list);
 
       filteredList = filteredListFromApi;
     }
 
     if (list.api && list.m3u && mergeApiM3u) {
-      if (resultChannelsByCategory.length > 0) list.selection = list.selection.concat(resultChannelsByCategory);
+      if (resultChannelsByCategory.length > 0)
+        list.selection = list.selection.concat(resultChannelsByCategory);
       const filteredListFromM3u = await listfromM3u(list);
       // From Xtream Code API
       const filteredListFromApi = await liveChannels(list);
@@ -58,7 +66,22 @@ const listManager = async (list) => {
       }
     }
 
-    return filteredList;
+    if (list.epg) {
+      const epgList = await getEpg(list, filteredList);
+      resultData = {
+        listName: list.name,
+        channels: filteredList,
+        epg: epgList,
+      };
+
+      return resultData;
+    }
+
+    resultData = {
+      listName: list.name,
+      channels: filteredList,
+    };
+    return resultData;
   }
 };
 
@@ -74,8 +97,9 @@ const generateList = async (list) => {
   return await createList(list);
 };
 
-const writeList = async (list) => {
-  writeFile(generatedListName, list);
+const writeList = async (list, type = "m3u") => {
+  if (type === "m3u") writeFile(generatedListName, list);
+  else writeFile(generatedXml, list);
 };
 
 const channelsByCategory = async (categories, api) => {
@@ -86,4 +110,15 @@ const channelsByCategory = async (categories, api) => {
   return await getChannelsByCategory(result);
 };
 
-export { listManager, getLists, mergeArrays, generateList, writeList };
+const generateXmlList = async (epgList, channelsList) => {
+  return generateXml(epgList, channelsList);
+};
+
+export {
+  listManager,
+  getLists,
+  mergeArrays,
+  generateList,
+  writeList,
+  generateXmlList,
+};

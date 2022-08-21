@@ -128,6 +128,35 @@ const addKodiOptimization = async (m3uList) => {
   return newM3u;
 };
 
+const filterEpg = (epgPrograms, selectedChannels, type = "latin-server") => {
+  let channelsList = [];
+  const tvgIds = extractEpgId(selectedChannels);
+
+  type === "latin-server"
+    ? (channelsList = epgPrograms)
+    : (channelsList = epgPrograms);
+
+  if (channelsList.length > 1) {
+    if (type === "latin-server") {
+      return channelsList.filter((list) => {
+        return tvgIds.includes(list._attributes.channel);
+      });
+    } else {
+      return channelsList.filter((list) => {
+        return tvgIds.includes(list.name);
+      });
+    }
+  } else {
+    throw "There is not items";
+  }
+};
+
+const extractEpgId = (list) => {
+  return list.map((element) => {
+    if (element.tvg.id) return element.tvg.id;
+  }).filter(Boolean);
+};
+
 export {
   getPlayList,
   filterList,
@@ -136,4 +165,5 @@ export {
   mergeList,
   fixChannelNameforApi,
   selectGroupByChannel,
+  filterEpg,
 };

@@ -40,6 +40,10 @@ Create a file called `lists.json` inside the folder configuration it shoul have 
     {
       "name": "iptv-org-es",
       "status": "enabled",
+      "epg": {
+        "url": "http://www.iptv.org/epg.gzip",
+	"gzip": true
+      },
       "m3u": {
         "url": "https://iptv-org.github.io/iptv/countries/es.m3u"
       },
@@ -55,6 +59,10 @@ Create a file called `lists.json` inside the folder configuration it shoul have 
       "status": "enabled",
       "mergeApiM3u": true,
       "mapM3uXtreamCode": true,
+      "epg": {
+        "url": "http://www.iptv.org/epg.xml",
+	"gzip": false
+      },
       "api": {
         "credentials": {
           "userName": "your_user",
