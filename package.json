@@ -30,7 +30,6 @@
     "iptv-playlist-parser": "^0.11.0",
     "lodash": "^4.17.21",
     "m3u-parser-generator": "^1.0.4",
-    "node-gzip": "^1.1.2",
     "xml-js": "^1.6.11"
   }
 }

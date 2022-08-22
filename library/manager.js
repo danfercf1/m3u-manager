@@ -14,7 +14,7 @@ import {
   getAllChannelsByCategories,
   getChannelsByCategory,
 } from "./channels/selected/category.js";
-import { getEpg, generateXml } from "./xml.js";
+import { getEpg, generateXml, generateGzipFile } from "./xml.js";
 
 const listManager = async (list) => {
   const { status, mergeApiM3u, mapM3uXtreamCode } = list;
@@ -39,7 +39,7 @@ const listManager = async (list) => {
     if (list.api && !list.m3u) {
       // From Xtream Code API
       if (resultChannelsByCategory.length > 0)
-        list.selection = list.selction.concat(resultChannelsByCategory);
+        list.selection = list.selection.concat(resultChannelsByCategory);
       const filteredListFromApi = await liveChannels(list);
 
       filteredList = filteredListFromApi;
@@ -111,7 +111,11 @@ const channelsByCategory = async (categories, api) => {
 };
 
 const generateXmlList = async (epgList, channelsList) => {
-  return generateXml(epgList, channelsList);
+  return await generateXml(epgList, channelsList);
+};
+
+const generatedGzipFile = async (xml) => {
+  return await generateGzipFile(xml);
 };
 
 export {
@@ -121,4 +125,5 @@ export {
   generateList,
   writeList,
   generateXmlList,
+  generatedGzipFile,
 };

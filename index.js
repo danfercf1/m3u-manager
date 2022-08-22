@@ -5,6 +5,7 @@ import {
   generateList,
   writeList,
   generateXmlList,
+  generatedGzipFile,
 } from "./library/manager.js";
 
 (async () => {
@@ -33,10 +34,14 @@ import {
       const processedXmlLists = mergeArrays(programs);
       // Create new List
       const generatedList = await generateList(processedlists);
-      const generatedXmlList = await generateXmlList(processedXmlLists, processedlists);
+      const generatedXmlList = await generateXmlList(
+        processedXmlLists,
+        processedlists
+      );
       // Write the new m3u file
       await writeList(generatedList);
       await writeList(generatedXmlList, "xml");
+      await generatedGzipFile(generatedXmlList);
       console.log(generatedList);
     }
   } catch (error) {
