@@ -1,9 +1,10 @@
 import convert from "xml-js";
 import download from "download";
-import nodeGzip from "node-gzip";
 import fs from "fs";
+import { promisify } from "util";
+import zlib from "zlib";
 
-import { epgDir } from "./constants/index.js";
+import { epgDir, generatedGzip } from "./constants/index.js";
 import { readFile } from "./file.js";
 import { filterEpg } from "./list.js";
 
@@ -21,7 +22,7 @@ const getEpg = async (list, filteredChannels = []) => {
     const newName = `${name}.gz`;
     await download(url, epgDir, { filename: newName });
     const file = fs.readFileSync(`${epgDir}/${newName}`);
-    const xmlUnziped = await nodeGzip.ungzip(file);
+    const xmlUnziped = await promisify(zlib.gunzip)(file);
     xml = xmlUnziped.toString();
   } else {
     await download(url, epgDir, { filename: epgName });
@@ -67,4 +68,9 @@ const generateXml = (epgList, channelsList) => {
   return `${xml}${convertedXml}`;
 };
 
-export { getEpg, generateXml };
+const generateGzipFile = async (xml) => {
+  const gzipped = await promisify(zlib.gzip)(xml);
+  return fs.writeFileSync(generatedGzip, gzipped);
+};
+
+export { getEpg, generateXml, generateGzipFile };

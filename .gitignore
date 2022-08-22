@@ -127,6 +127,8 @@ lists/generated/*m3u
 
 lists/generated/*xml
 
+lists/generated/*gz
+
 # Configuration files
 
 configuration/*.json
