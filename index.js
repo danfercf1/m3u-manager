@@ -1,41 +1,49 @@
-import { writeFile } from './library/file.js';
-import { createList, mapM3uXtreamCodeData, mergeList } from './library/list.js';
-import { getSelectedChannels } from './library/channels/selected/index.js';
-import { liveChannels } from './library/channels/live.js';
-import { listfromM3u } from './library/channels/m3u.js'
-
-const listName = "iptv.m3u";
-const m3uFile = `./lists/${listName}`;
-const newFile = `./lists/generated/${listName}`;
+import {
+  listManager,
+  getLists,
+  mergeArrays,
+  generateList,
+  writeList,
+  generateXmlList,
+  generatedGzipFile,
+} from "./library/manager.js";
 
 (async () => {
   try {
-    // From m3u file
-    
-    const filteredListFromM3u = await listfromM3u(m3uFile);
+    let newList = [];
+    const lists = await getLists();
 
-    // From Xtream Code API
-    
-    const filteredListFromApi = await liveChannels();
+    lists.forEach((list) => {
+      newList.push(listManager(list));
+    });
 
-    // Merge channels
+    if (newList.length > 0) {
+      let [...dataResult] = (await Promise.all(newList)).filter((item) => item);
+      const channels = dataResult.map((element) => {
+        return element.channels;
+      });
 
-    const mergedChannels = await mergeList(filteredListFromM3u, filteredListFromApi);
+      const programs = dataResult
+        .map((element) => {
+          return element.epg;
+        })
+        .filter(Boolean);
 
-    // Map Channels
+      const processedlists = mergeArrays(channels);
 
-    const mappedChannels = await mapM3uXtreamCodeData(mergedChannels);
-
-    // Create new List
-
-    const newList = await createList(mappedChannels, await getSelectedChannels());
-
-    // Write the new m3u file
-
-    await writeFile(newFile, newList);
-
-    console.log(mappedChannels);
-
+      const processedXmlLists = mergeArrays(programs);
+      // Create new List
+      const generatedList = await generateList(processedlists);
+      const generatedXmlList = await generateXmlList(
+        processedXmlLists,
+        processedlists
+      );
+      // Write the new m3u file
+      await writeList(generatedList);
+      await writeList(generatedXmlList, "xml");
+      await generatedGzipFile(generatedXmlList);
+      console.log(generatedList);
+    }
   } catch (error) {
     console.log(error);
   }

@@ -1,9 +1,10 @@
 import axios from "axios";
 
-import { api } from './constants/index.js';
+import { xtreamApi } from "./constants/index.js";
 
-const getAllChannels = async () => {
-  const { url, credentials, actions, categories } = api;
+const getAllChannels = async (api) => {
+  const { url, credentials } = api;
+  const { actions } = xtreamApi;
   try {
     const getChannels = await axios.get(url, {
       params: {
@@ -19,19 +20,20 @@ const getAllChannels = async () => {
   }
 };
 
-const getAllLiveStreamsByCategory = async (categoryId) => {
-  const { url, credentials, actions } = api;
+const getAllLiveStreamsByCategory = (categoryId, api) => {
+  const { url, credentials } = api;
+  const { actions } = xtreamApi;
   try {
-    const getChannels = await axios.get(url, {
+    const getChannels = axios.get(url, {
       params: {
         username: credentials.userName,
         password: credentials.password,
         action: actions.getAllLiveStreams,
-        category_id: categoryId
+        category_id: categoryId,
       },
     });
 
-    return getChannels.data;
+    return getChannels;
   } catch (error) {
     console.log(error);
   }

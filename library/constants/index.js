@@ -1,9 +1,27 @@
-const api = {
-  url: "http://51.161.115.48:8080/player_api.php",
-  credentials: {
-    userName: "danfercf",
-    password: "d4nf3rcf",
-  },
+import { config } from "dotenv";
+import path from "path";
+
+config();
+
+const homeDir = path.resolve(path.dirname(""));
+const listsDir = path.resolve(homeDir, "lists");
+const epgDir = path.resolve(homeDir, "epg");
+const m3uListName = process.env.M3U_LIST_NAME || "iptv-custom.m3u";
+const xmlName = process.env.XML_LIST_NAME || "iptv-custom.xml";
+const gzipName = process.env.GZIP_LIST_NAME || "iptv-custom.xml.gz";
+
+const generatedList = path.resolve(homeDir, `./lists/generated/${m3uListName}`);
+const generatedXml = path.resolve(homeDir, `./lists/generated/${xmlName}`);
+const generatedGzip = path.resolve(homeDir, `./lists/generated/${gzipName}`);
+const m3uListTitle = process.env.M3U_LIST_TITLE || "Danfercf IPTV";
+const optimizedForKodi = process.env.OPTIMIZED_FOR_KODI || true;
+
+const statuses = {
+  enabled: "enabled",
+  disabled: "disabled",
+};
+
+const xtreamApi = {
   actions: {
     getAllLiveStreams: "get_live_streams",
     getLiveCategories: "get_live_categories",
@@ -12,13 +30,17 @@ const api = {
     getSeriesStreams: "get_series",
     getSeriesCategories: "get_series_categories",
   },
-  categories: {
-    events: 33,
-  }
 };
 
-const m3u = {
-  url: 'http://10.10.10.20/iptv/iptv.m3u'
-}
-
-export { api, m3u };
+export {
+  xtreamApi,
+  homeDir,
+  listsDir,
+  statuses,
+  generatedList,
+  m3uListTitle,
+  optimizedForKodi,
+  epgDir,
+  generatedXml,
+  generatedGzip,
+};

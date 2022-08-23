@@ -2,6 +2,8 @@ import { M3uPlaylist, M3uMedia } from "m3u-parser-generator";
 import _ from "lodash";
 import parser from "iptv-playlist-parser";
 
+import { m3uListTitle, optimizedForKodi } from "./constants/index.js";
+
 const getPlayList = async (list) => {
   try {
     return parser.parse(list);
@@ -30,33 +32,42 @@ const filterList = async (
   }
 };
 
-const createList = async (channelData, selectedChannels) => {
+const createList = async (channelData) => {
   const playlist = new M3uPlaylist();
-  playlist.title = `danfercf's IPTV`;
+  playlist.title = m3uListTitle;
 
   channelData.forEach((channel) => {
     const media = new M3uMedia(channel.url);
     const channelName = channel.name;
+
     media.attributes = {
-      "tvg-id": channel.tvg.id,
-      "tvg-language": "ES",
-      "tvg-logo": channel.tvg.logo,
+      "tvg-id": channel.tvg.id || "",
+      "tvg-name": channel.tvg.name || "",
+      "tvg-language": channel.tvg.language || "ES",
+      "tvg-country": channel.tvg.country || "",
+      "tvg-logo": channel.tvg.logo || "",
+      "tvg-url": channel.tvg.url || "",
+      "tvg-rec": channel.tvg.rec || "",
     };
     media.duration = -1;
     media.name = channelName;
-    media.group = selectGroupByChannel(channelName, selectedChannels);
+    media.group = channel.group ? channel.group.title : "";
 
     playlist.medias.push(media);
   });
 
-  return playlist.getM3uString();
+  const m3uListGenerated = playlist.getM3uString();
+
+  if (optimizedForKodi) {
+    return addKodiOptimization(m3uListGenerated);
+  } else {
+    return m3uListGenerated;
+  }
 };
 
 const selectGroupByChannel = (channelName, selectedChannels) => {
-  const channelGroup = selectedChannels.find((c) =>
-    c.items.includes(channelName)
-  );
-  return channelGroup.name;
+  const channelGroup = selectedChannels.find((c) => c.channel === channelName);
+  return channelGroup.category;
 };
 
 const mergeList = async (m3uList, xtreamCodeList) => {
@@ -68,6 +79,9 @@ const mapM3uXtreamCodeData = async (joined) => {
     const name = channel.name;
     return {
       name: name,
+      group: {
+        title: channel.group ? channel.group.title : "",
+      },
       url: channel.url,
       tvg: {
         id: channel.epg_channel_id,
@@ -101,6 +115,40 @@ const fixChannelNameforApi = async (filteredList) => {
   });
 };
 
+const addKodiOptimization = async (m3uList) => {
+  let newM3u = "#EXTM3U\n";
+  const m3uListSplitted = m3uList.split(/\r?\n/);
+  newM3u = `${newM3u}${m3uListSplitted[1]}\n`;
+  for (let index = 2; index < m3uListSplitted.length; index++) {
+    const value = m3uListSplitted[index];
+    newM3u = `${newM3u}${value}\n`;
+    if (value.search("#EXTGRP") !== -1)
+      newM3u = `${newM3u}#KODIPROP:inputstream=inputstream.adaptive\n#KODIPROP:inputstream.adaptive.manifest_type=hls\n`;
+  }
+  return newM3u;
+};
+
+const filterEpg = (epgPrograms, selectedChannels) => {
+  let channelsList = [];
+  const tvgIds = extractEpgId(selectedChannels);
+
+  channelsList = epgPrograms;
+
+  if (channelsList.length > 1) {
+    return channelsList.filter((list) => {
+      return tvgIds.includes(list._attributes.channel);
+    });
+  } else {
+    throw "There is not items";
+  }
+};
+
+const extractEpgId = (list) => {
+  return list.map((element) => {
+    if (element.tvg.id) return element.tvg.id;
+  }).filter(Boolean);
+};
+
 export {
   getPlayList,
   filterList,
@@ -108,4 +156,6 @@ export {
   mapM3uXtreamCodeData,
   mergeList,
   fixChannelNameforApi,
+  selectGroupByChannel,
+  filterEpg,
 };

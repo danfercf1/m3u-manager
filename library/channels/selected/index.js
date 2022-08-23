@@ -1,15 +1,17 @@
-import { selectedChannelsByName, selectedChannels } from "../../constants/selected.js";
-import { getChannels as eventsChannels } from "./events.js";
-
-const getSelectedChannelsByName = async () => {
-  const getManuallySelected = selectedChannelsByName;
-  const getEventsSelected = await eventsChannels();
-
-  return getManuallySelected.concat(getEventsSelected.items);
+const getSelectedChannelsByName = async (list, type = "channel") => {
+  if (list.selection) {
+    if (type === "epg") {
+      return list.selection.map((select) => {
+        if (select.epgId) return select.epgId;
+      });
+    } else {
+      return list.selection.map((select) => {
+        return select.channel;
+      });
+    }
+  } else {
+    return [];
+  }
 };
 
-const getSelectedChannels = async () => {
-    return selectedChannels.concat(await eventsChannels());
-};
-
-export { getSelectedChannelsByName, getSelectedChannels };
+export { getSelectedChannelsByName };
