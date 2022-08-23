@@ -122,4 +122,12 @@ npm i
 
 ## M3U List
 
-The list will be generated inside the folder ./lists/generated/ with the name `iptv.m3u`
+The list will be generated inside the folder ./lists/generated/ with the name `iptv-custom.m3u` and a compressed xml file named `iptv-custom.xml.gz`
+
+## Additionally I added a cron task to update the channel list every 6 hours
+
+It was added it with the line described below
+
+```bash
+* */6 * * * sudo /home/my_user/projects/m3u-manager/scripts/runner.sh
+´´´
