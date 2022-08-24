@@ -42,7 +42,7 @@ Create a file called `lists.json` inside the folder configuration it shoul have 
       "status": "enabled",
       "epg": {
         "url": "http://www.iptv.org/epg.gzip",
-	"gzip": true
+        "gzip": true
       },
       "m3u": {
         "url": "https://iptv-org.github.io/iptv/countries/es.m3u"
@@ -61,7 +61,7 @@ Create a file called `lists.json` inside the folder configuration it shoul have 
       "mapM3uXtreamCode": true,
       "epg": {
         "url": "http://www.iptv.org/epg.xml",
-	"gzip": false
+        "gzip": false
       },
       "api": {
         "credentials": {
@@ -108,6 +108,23 @@ You can choose a bunch of categories using the `categories` configuration
         "categoryId": 26
     }
 ]
+```
+
+If you avoid to send the selection parameter its mean that the manager load all the channels for that list
+
+```json
+ {
+    "name": "pluto-tv-es",
+    "status": "enabled",
+    "epg": {
+      "url": "https://www.iptv.org/pluto-tv-es.xml.gz",
+      "gzip": true
+    },
+    "m3u": {
+      "url": "https://www.iptv.org/plutotv.m3u",
+      "downloadm3u": true
+    }
+  }
 ```
 
 The API configuration is for a Xtream code iptv API [https://xtream-ui.org/api-xtreamui-xtreamcode/](https://xtream-ui.org/api-xtreamui-xtreamcode/)
