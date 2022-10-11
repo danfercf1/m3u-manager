@@ -8,7 +8,7 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "runtimeExecutable": "${env:HOME}/.nvm/versions/node/v14.16.0/bin/node",
+            "runtimeExecutable": "/bin/node",
             "skipFiles": [
                 "<node_internals>/**"
             ],

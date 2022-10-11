@@ -122,8 +122,13 @@ const addKodiOptimization = async (m3uList) => {
   for (let index = 2; index < m3uListSplitted.length; index++) {
     const value = m3uListSplitted[index];
     newM3u = `${newM3u}${value}\n`;
-    if (value.search("#EXTGRP") !== -1)
-      newM3u = `${newM3u}#KODIPROP:inputstream=inputstream.adaptive\n#KODIPROP:inputstream.adaptive.manifest_type=hls\n`;
+    if (value.search("#EXTGRP") !== -1) {
+      newM3u = newM3u + "#KODIPROP:inputstream=inputstream.adaptive\n" +
+      "#KODIPROP:inputstream=inputstream.adaptive.stream_mode=timeshift\n" + 
+      "#KODIPROP:inputstream=inputstream.adaptive.is_realtime_stream=true\n" +
+      "#KODIPROP:http-reconnect=true\n" +
+      "#KODIPROP:inputstream.adaptive.manifest_type=hls\n";
+    }
   }
   return newM3u;
 };
