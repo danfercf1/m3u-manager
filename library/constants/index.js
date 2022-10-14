@@ -1,5 +1,6 @@
 import { config } from "dotenv";
 import path from "path";
+import yn from 'yn';
 
 config();
 
@@ -14,7 +15,7 @@ const generatedList = path.resolve(homeDir, `./lists/generated/${m3uListName}`);
 const generatedXml = path.resolve(homeDir, `./lists/generated/${xmlName}`);
 const generatedGzip = path.resolve(homeDir, `./lists/generated/${gzipName}`);
 const m3uListTitle = process.env.M3U_LIST_TITLE || "Danfercf IPTV";
-const optimizedForKodi = process.env.OPTIMIZED_FOR_KODI || true;
+const optimizedForKodi = process.env.OPTIMIZED_FOR_KODI ? yn(process.env.OPTIMIZED_FOR_KODI) : true;
 
 const statuses = {
   enabled: "enabled",

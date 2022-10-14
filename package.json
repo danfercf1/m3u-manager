@@ -23,13 +23,14 @@
   },
   "homepage": "https://github.com/danfercf1/m3u-manager#readme",
   "dependencies": {
-    "axios": "^0.27.2",
-    "dotenv": "^16.0.1",
-    "download": "^8.0.0",
+    "axios": "0.27.2",
+    "dotenv": "16.0.1",
+    "download": "8.0.0",
     "fs": "0.0.1-security",
-    "iptv-playlist-parser": "^0.11.0",
-    "lodash": "^4.17.21",
-    "m3u-parser-generator": "^1.0.4",
-    "xml-js": "^1.6.11"
+    "iptv-playlist-parser": "0.11.0",
+    "lodash": "4.17.21",
+    "m3u-parser-generator": "1.0.4",
+    "xml-js": "1.6.11",
+    "yn": "5.0.0"
   }
 }
