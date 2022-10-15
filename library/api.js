@@ -3,6 +3,7 @@ import axios from "axios";
 import { xtreamApi } from "./constants/index.js";
 
 const headers = {
+  Accept: "application/json",
   "User-Agent": "axios 0.27.2"
 };
 
