@@ -2,11 +2,16 @@ import axios from "axios";
 
 import { xtreamApi } from "./constants/index.js";
 
+const headers = {
+  "User-Agent": "axios 0.27.2"
+};
+
 const getAllChannels = async (api) => {
   const { url, credentials } = api;
   const { actions } = xtreamApi;
   try {
     const getChannels = await axios.get(url, {
+      headers,
       params: {
         username: credentials.userName,
         password: credentials.password,
@@ -25,6 +30,7 @@ const getAllLiveStreamsByCategory = (categoryId, api) => {
   const { actions } = xtreamApi;
   try {
     const getChannels = axios.get(url, {
+      headers,
       params: {
         username: credentials.userName,
         password: credentials.password,
