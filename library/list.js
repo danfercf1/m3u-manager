@@ -139,12 +139,13 @@ const filterEpg = (epgPrograms, selectedChannels) => {
 
   channelsList = epgPrograms;
 
-  if (channelsList.length > 1) {
+  if (channelsList && channelsList.length > 1) {
     return channelsList.filter((list) => {
       return tvgIds.includes(list._attributes.channel);
     });
   } else {
-    throw "There is not items";
+    if (tvgIds) return tvgIds;
+    else throw "There is not items";
   }
 };
 
